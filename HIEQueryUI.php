@@ -1,23 +1,23 @@
 <?php 
 namespace HIEQueryUI;
 
-include('interfaces/onChange.php');
-include('interfaces/onClick.php');
-include('interfaces/onTimeout.php');
-include('interfaces/onEnter.php');
+require_once __DIR__.'/interfaces/onChange.php';
+require_once __DIR__.'/interfaces/onClick.php';
+require_once __DIR__.'/interfaces/onTimeout.php';
+require_once __DIR__.'/interfaces/onEnter.php';
 
-include('widgets/Widget.php');
-include('widgets/InteractableWidget.php');
-include('widgets/Container.php');
-include('widgets/Button.php');
-include('widgets/Checkbox.php');
-include('widgets/Viewport.php');
+require_once __DIR__.'/widgets/Widget.php';
+require_once __DIR__.'/widgets/InteractableWidget.php';
+require_once __DIR__.'/widgets/Container.php';
+require_once __DIR__.'/widgets/Button.php';
+require_once __DIR__.'/widgets/Checkbox.php';
+require_once __DIR__.'/widgets/Viewport.php';
 
-include('widgets/Input.php');
+require_once __DIR__.'/widgets/Input.php';
 
-include('widgets/NavItem.php');
-include('widgets/Navbar.php');
-include('widgets/LTEAdminUI.php');
+require_once __DIR__.'/widgets/NavItem.php';
+require_once __DIR__.'/widgets/Navbar.php';
+require_once __DIR__.'/widgets/LTEAdminUI.php';
 
 class HIEQueryUI {
     public static $me = false;
