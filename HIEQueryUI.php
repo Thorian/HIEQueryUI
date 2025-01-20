@@ -28,6 +28,7 @@ class HIEQueryUI {
     
     //possible types: embedded, full, ajax
     public $entrypoint;
+    public $title = 'HIEQueryUI';
     
     public function __construct($entrypoint,$type='full') {
         $this->entrypoint = $entrypoint;
