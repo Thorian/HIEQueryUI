@@ -9,6 +9,7 @@ class Widget {
     
     public function __construct() {
         $this->id = uniqid(count(self::$WidgetDB));
+        self::$WidgetDB[$this->id] = $this;
     }
     
     public function __wakeup() {
