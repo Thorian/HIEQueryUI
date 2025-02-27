@@ -40,6 +40,6 @@ class Widget {
             unset(self::$changed[$this->id]);
     }
     public function changed() {
-        self::$changed[] = $this;
+        self::$changed[$this->id] = $this;
     }
 }
