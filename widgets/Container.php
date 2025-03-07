@@ -5,12 +5,13 @@ class Container extends Widget {
     
     public function add(Widget $child) {
         $this->childs[] = $child;
+        $this->changed();
     }
     
     public function del(Widget $child) {
         foreach ($this->childs as $key => $c) {
             if($c == $child)
-                unset($this->childs[$key]);
+                { unset($this->childs[$key]); $this->changed(); }
         }
     }
     
