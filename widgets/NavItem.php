@@ -1,51 +1,18 @@
-<?php 
+<?php
 namespace HIEQueryUI;
 class NavItem extends InteractableWidget {
     protected $label;
     protected $icon;
     protected $target;
     public $active = false;
-    
     public function show() {
         $this->displayed();
-        $ht = '<li id="'.$this->id.'" class="nav-item';
-        
-        if(is_a($this->target,"HIEQueryUI\Navbar")) {
-            $ht .= ' has-treeview';
-            $ht .='">';
-            $ht .= '<a class="nav-link';
-            if($this->active) {
-                $ht .= ' active';
-            }
-            $ht .= '" href="#">';
-        } else {
-            $ht .='">';
-            $ht .= '<a type="button" class="nav-link';
-            if($this->active) {
-                $ht .= ' active';
-            }
-            $ht .='" onclick="eventcall(\''.$this->id.'\',\'onClick\')">';
-        }
-        
-        if($this->icon) {
-            $ht .= '<i class="nav-icon fas '.$this->icon.'"></i>';
-        }
-        
-        $ht .= '<p>'._($this->label);
-        if(is_a($this->target,"HIEQueryUI\Navbar")) {
-            $ht .= '<i class="right fas fa-angle-left"></i>';
-        }
-        $ht .= '</p>';
-        
-        if(is_a($this->target,"HIEQueryUI\Navbar")) {
-            $ht .= '</a>';
-            $ht .= str_replace("nav nav-pills nav-sidebar flex-column","nav nav-treeview",$this->target->show());
-        } else {
-            $ht .= '</a>';
-        }
-        $ht .= '</li>';
-        return $ht;
+        $nested = $this->target instanceof Navbar;
+        $html = '<li id="'.Html::escape($this->id).'" class="nav-item'.($nested ? ' has-treeview' : '').'">';
+        $html .= '<a href="#" class="nav-link'.($this->active ? ' active' : '').'"'.($nested ? '' : ' onclick="event.preventDefault();eventcall(\''.$this->id.'\',\'onClick\')"').'>';
+        if ($this->icon) $html .= '<i aria-hidden="true" class="nav-icon '.Html::escape($this->icon).'"></i>';
+        $html .= '<p>'.Html::content($this->label).($nested ? '<i class="right fas fa-angle-left"></i>' : '').'</p></a>';
+        if ($nested) $html .= str_replace('nav nav-pills nav-sidebar flex-column', 'nav nav-treeview', $this->target->show());
+        return $html.'</li>';
     }
-    
-    
 }
