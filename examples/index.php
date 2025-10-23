@@ -7,6 +7,7 @@ if (!isset($_SESSION['hiequeryui-example'])) {
     $ui = new \HIEQueryUI\HIEQueryUI(new \HIEQueryUI\Examples\Counter(), 'ajax');
     $ui->title = 'HIEQueryUI Counter';
     $ui->runtimeUrl = '../assets/hiequeryui.js';
+    $ui->stylesheetUrl = 'demo.css';
     $_SESSION['hiequeryui-example'] = $ui;
 }
 $_SESSION['hiequeryui-example']->start();

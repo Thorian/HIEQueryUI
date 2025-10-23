@@ -1,0 +1,5 @@
+body { max-width: 48rem; margin: 3rem auto; padding: 0 1rem; color: #172b38; background: #f4f7f8; font: 1rem/1.6 system-ui, sans-serif; }
+button, input { margin: .5rem; padding: .7rem 1rem; font: inherit; }
+button { border: 1px solid #9ab4c4; border-radius: .3rem; background: white; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid #217db0; outline-offset: 2px; }
+#hiequeryui-error { padding: 1rem; background: #fff1d9; border: 1px solid #ba7a24; }

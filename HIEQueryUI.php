@@ -18,6 +18,7 @@ class HIEQueryUI {
     public $type;
     public $filebase = '';
     public $runtimeUrl = 'assets/hiequeryui.js';
+    public $stylesheetUrl = '';
     public $title = 'HIEQueryUI';
     public $entrypoint;
     protected $csrfToken;
@@ -37,6 +38,7 @@ class HIEQueryUI {
         $config = array('endpoint' => $endpoint, 'mode' => $this->type, 'csrf' => $this->csrfToken);
         $json = json_encode($config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR);
         $html = '';
+        if ($this->stylesheetUrl !== '') $html .= '<link rel="stylesheet" href="'.Html::escape($this->stylesheetUrl).'">';
         if ($this->filebase !== '') {
             foreach (array('plugins/fontawesome-free/css/all.min.css', 'dist/css/adminlte.min.css') as $path) {
                 $html .= '<link rel="stylesheet" href="'.Html::escape(rtrim($this->filebase, '/').'/'.$path).'">';
