@@ -46,9 +46,20 @@
         const response = await fetch(config.endpoint, {method: 'POST', credentials: 'same-origin', body});
         const updates = await response.json();
         if (!response.ok) throw new Error(updates.error?.message || 'The widget request failed.');
+        const active = document.activeElement;
+        const focus = active?.id ? {id: active.id, start: active.selectionStart, end: active.selectionEnd, direction: active.selectionDirection} : null;
         for (const item of updates) for (const [id, markup] of Object.entries(item)) {
             const target = document.getElementById(id);
             if (target) target.outerHTML = decode(markup);
+        }
+        if (focus) {
+            const replacement = document.getElementById(focus.id);
+            if (replacement && replacement !== active) {
+                replacement.focus({preventScroll: true});
+                if (typeof focus.start === 'number' && replacement.setSelectionRange) {
+                    replacement.setSelectionRange(focus.start, focus.end, focus.direction);
+                }
+            }
         }
         document.getElementById('hiequeryui-error')?.remove();
         document.dispatchEvent(new CustomEvent('hiequeryui:updated'));

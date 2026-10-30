@@ -36,6 +36,17 @@ async function test() {
     const second = eventcall('a', 'onChange'); await Promise.all([first, second]);
     assert.equal(Base64.decode(requests.at(-2).request.body.get('data')), value); count++;
     assert.equal(Base64.decode(requests.at(-1).request.body.get('data')), 'second'); count++;
+    const original = elements.get('a');
+    original.id = 'a'; original.selectionStart = 1; original.selectionEnd = 2; original.selectionDirection = 'forward';
+    document.activeElement = original;
+    let focused = false, selection;
+    Object.defineProperty(original, 'outerHTML', {set() {
+        elements.set('a', {id: 'a', focus() { focused = true; }, setSelectionRange(...args) { selection = args; }});
+    }});
+    context.fetch = async () => ({ok: true, json: async () => [{a: Base64.encode('<input id="a">')}]});
+    await eventcall('a', 'onChange');
+    assert.equal(focused, true); count++;
+    assert.equal(JSON.stringify(selection), JSON.stringify([1, 2, 'forward'])); count++;
     console.log(`PASS ${count} browser-runtime checks`);
 }
 test().catch(error => { console.error(error); process.exitCode = 1; });
