@@ -1,6 +1,6 @@
 {
   "name": "hie/hiequeryui",
-  "description": "Small PHP widgets with server-side listeners and session-persistent UI state.",
+  "description": "PHP-GTK-inspired server-side application framework with persistent PHP state and a thin browser presentation layer.",
   "type": "library",
   "license": "MIT",
   "require": {"php": ">=8.2"},
