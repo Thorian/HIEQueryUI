@@ -83,4 +83,5 @@ $app->type = 'ajax'; $root->show();
 $root->button->changed(); $root->changed(); $updates = $app->updates();
 check(!Widget::$changed && str_contains(base64_decode($updates[$root->getId()]), 'Clicks: 1'), 'nested updates drain queue');
 require __DIR__.'/label.php';
+require __DIR__.'/button.php';
 echo 'PASS '.$checks." PHP checks\n";

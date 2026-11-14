@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add Button disabled state, decorative icons, and an accessible name for icon-only actions. Disabled buttons reject events in PHP as well as in the browser.
+
 - Add Label with escaped text, explicit trusted HTML, and native Input/Checkbox association.
 - Include a standalone Label example and tests for updates, session restoration, and invalid targets.
 

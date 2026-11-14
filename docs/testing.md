@@ -15,3 +15,5 @@ The HTTP test starts an isolated PHP development server on loopback, uses test s
 The GitHub workflow tests PHP 8.2, 8.3, and 8.4 with Node 22. Local checks used PHP 8.4.26 and Node. Check the Actions results for the other PHP versions.
 
 Label was checked locally with PHP 8.4.26 and the in-app browser: caption clicks focus the input or toggle the checkbox, Tab/Space operate the controls, Unicode text updates through PHP, and values and associations survive reload. The PHP suite also covers invalid targets, explicit trusted markup, passive-event rejection, and parent refreshes. Other browser engines have not been checked for this widget.
+
+Button was checked with PHP 8.4.26 and the in-app browser: Enter and Space activation, icon-only accessible naming, disabled controls skipped by Tab, focus after updates, and disabled state after reload. PHP and HTTP tests also check that crafted events cannot invoke a disabled action. Other browser engines have not been checked for this update.

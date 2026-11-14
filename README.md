@@ -30,6 +30,8 @@ Open `http://127.0.0.1:8080/examples/index.php`. The example includes a counter,
 
 The [Label example](examples/label.php) shows input and checkbox captions, trusted markup, and text updated by a PHP listener.
 
+The [Button example](examples/button.php) shows icons, accessible names, and enabling or disabling actions from PHP.
+
 The built-in PHP server is for local development. Deploy behind your normal PHP web server for public use.
 
 ## Build an application in PHP

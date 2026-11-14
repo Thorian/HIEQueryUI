@@ -27,7 +27,7 @@ The order follows dependencies: Select comes before SelectMenu, and DatePicker a
 | Order | Component | Status | Initial scope |
 |---|---|---|---|
 | 1 | Label | Implemented | Escaped text, explicit trusted HTML, Input/Checkbox association; [example](examples/label.php) |
-| 2 | Button | Existing; upgrade planned | Disabled state, icon/text slots, accessible action semantics |
+| 2 | Button | Implemented | Disabled state, icon/text slots, accessible action semantics; [example](examples/button.php) |
 | 3 | Input | Existing; upgrade planned | Declared input options, read-only/disabled state, server-side value validation hooks |
 | 4 | TextArea | Planned | Multiline text, bounds, read-only/disabled state |
 | 5 | Checkbox | Existing; upgrade planned | Clear checked/unchecked contract, disabled state, associated label |
