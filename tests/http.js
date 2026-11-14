@@ -54,6 +54,16 @@ async function post(route, info, event = 'onClick', overrides = {}) {
         else assert.match(Buffer.from(Object.values(JSON.parse(result.text)[0])[0], 'base64').toString(), /Clicks: 1/);
         checks++;
     }
+    const labels = await get('/examples/label.php');
+    assert.equal(labels.response.status, 200); checks++;
+    const inputId = labels.text.match(/<input id="([^"]+)"/)[1];
+    assert(labels.text.includes(`for="${inputId}"`)); checks++;
+    const labelInfo = {config: JSON.parse(labels.text.match(/id="hiequeryui-config">(.*?)<\/script>/s)[1]), source: inputId};
+    const labelChange = await post('/examples/label.php', labelInfo, 'onChange', {data: Buffer.from('<Zoë> 🦞').toString('base64')});
+    assert.equal(labelChange.status, 200); checks++;
+    const labelUpdates = Object.values(JSON.parse(labelChange.text)[0]).map(value => Buffer.from(value, 'base64').toString());
+    assert(labelUpdates.some(value => value.includes('Hello, &lt;Zoë&gt; 🦞'))); checks++;
+    assert.match((await get('/examples/label.php')).text, /Hello, &lt;Zoë&gt; 🦞/); checks++;
     cookie = '';
     await get('/examples/index.php');
     assert.equal((await post('/examples/index.php', info)).status, 403); checks++;

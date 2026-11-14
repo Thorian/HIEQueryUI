@@ -1,0 +1,40 @@
+<?php
+use HIEQueryUI\{Label, Widget, Html, Input, Checkbox, Container, HIEQueryUI};
+
+$label = new Label();
+check(str_contains($label->show(), '<span id="'.$label->getId().'" class=""></span>'), 'empty label has an identifiable root');
+$label->text = 'Zoë 🦞 "<&';
+check(isset(Widget::$changed[$label->getId()]), 'label text queues refresh');
+check(str_contains($label->show(), 'Zoë 🦞 &quot;&lt;&amp;'), 'label escapes punctuation and Unicode');
+check(!isset(Widget::$changed[$label->getId()]), 'label render clears refresh');
+$label->text = Html::raw('<strong>Trusted</strong>');
+check(str_contains($label->show(), '<strong>Trusted</strong>'), 'label supports explicit trusted HTML');
+$label->classes = array('caption', '" onmouseover="bad');
+check(str_contains($label->show(), 'class="caption &quot; onmouseover=&quot;bad"'), 'label classes escaped');
+$field = new Input('Name'); $label->target = $field;
+check(str_contains($label->show(), '<label ') && str_contains($label->show(), 'for="'.$field->getId().'"'), 'label associates with input');
+$toggle = new Checkbox('Updates'); $label->target = $toggle;
+check(str_contains($label->show(), 'for="'.$toggle->getId().'"'), 'label associates with checkbox');
+check(fails(function() use ($label) { $label->target = new Container(); }), 'label rejects non-labelable target');
+check($label->target === $toggle, 'invalid target preserves previous association');
+$label->target = null;
+check(str_starts_with($label->show(), '<span ') && !str_contains($label->show(), ' for='), 'label can remove association');
+Widget::$changed = array(); $label->text = $label->text;
+check(!Widget::$changed, 'unchanged label does not queue refresh');
+
+require_once dirname(__DIR__).'/examples/LabelDemo.php';
+$demoApp = new HIEQueryUI(new \HIEQueryUI\Examples\LabelDemo(), 'ajax');
+$demoApp = unserialize(serialize($demoApp)); $demo = $demoApp->entrypoint;
+$markup = $demo->show();
+check(str_contains($markup, 'for="'.$demo->input->getId().'"'), 'label association survives session restoration');
+check(Widget::$WidgetDB[$demo->status->getId()] === $demo->status, 'restored label registered');
+[$status, $body] = request($demoApp, $demo->input->getId(), 'onChange', '<Zoë> 🦞');
+$updates = json_decode($body, true)[0];
+check($status === 200 && str_contains(base64_decode($updates[$demo->status->getId()]), 'Hello, &lt;Zoë&gt; 🦞'), 'restored listener updates escaped label through AJAX');
+[$status, $body] = request($demoApp, $demo->checkbox->getId(), 'onClick', '1');
+check($status === 200 && $demo->checkbox->value === '1' && str_contains(base64_decode(json_decode($body, true)[0][$demo->status->getId()]), 'Updates enabled.'), 'checkbox caption demo persists selection and updates label');
+[$status] = request($demoApp, $demo->status->getId(), 'onClick');
+check($status === 410, 'passive label rejects crafted events');
+$demo->status->text = 'Parent refresh'; $demo->changed();
+$updates = $demoApp->updates();
+check(!Widget::$changed && str_contains(base64_decode($updates[$demo->getId()]), 'Parent refresh'), 'label and parent updates drain together');

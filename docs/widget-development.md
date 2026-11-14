@@ -1,6 +1,6 @@
 # Writing a widget
 
-Widgets extend Widget, or InteractableWidget when they accept browser events. Existing components in [widgets/](../widgets/) provide examples; [Button](../widgets/Button.php) is a simple starting point.
+Widgets extend Widget, or InteractableWidget when they accept browser events. Existing components in [widgets/](../widgets/) provide examples; [Label](../widgets/Label.php) is a simple starting point.
 
 ## State and rendering
 

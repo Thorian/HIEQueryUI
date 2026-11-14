@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add Label with escaped text, explicit trusted HTML, and native Input/Checkbox association.
+- Include a standalone Label example and tests for updates, session restoration, and invalid targets.
+
 ## 0.2.0-rc.1
 
 - Fresh/restored widget registration and deduplicated refresh queues.

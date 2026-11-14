@@ -28,6 +28,8 @@ php -S 127.0.0.1:8080
 
 Open `http://127.0.0.1:8080/examples/index.php`. The example includes a counter, text input, and checkbox. Full-page and embedded examples are also in examples/.
 
+The [Label example](examples/label.php) shows input and checkbox captions, trusted markup, and text updated by a PHP listener.
+
 The built-in PHP server is for local development. Deploy behind your normal PHP web server for public use.
 
 ## Build an application in PHP

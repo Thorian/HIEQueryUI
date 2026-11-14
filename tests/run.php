@@ -82,4 +82,5 @@ $app->type = 'embedded'; check(str_contains($app->start(), 'Clicks: 1'), 'embedd
 $app->type = 'ajax'; $root->show();
 $root->button->changed(); $root->changed(); $updates = $app->updates();
 check(!Widget::$changed && str_contains(base64_decode($updates[$root->getId()]), 'Clicks: 1'), 'nested updates drain queue');
+require __DIR__.'/label.php';
 echo 'PASS '.$checks." PHP checks\n";
