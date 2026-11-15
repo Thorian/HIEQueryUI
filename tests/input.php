@@ -1,0 +1,46 @@
+<?php
+use HIEQueryUI\{Input, Widget, HIEQueryUI};
+
+$input = new Input('Name');
+check(!$input->disabled && !$input->readOnly && !$input->required && $input->placeholder === '', 'input defaults remain editable');
+$input->placeholder = 'Zoë "<& 🦞'; $input->name = 'name"<&';
+check(str_contains($input->show(), 'placeholder="Zoë &quot;&lt;&amp; 🦞"') && str_contains($input->show(), 'name="name&quot;&lt;&amp;"'), 'input options escaped');
+$input->type = 'email';
+check(str_contains($input->show(), 'type="email"'), 'declared input type renders');
+check(fails(function() use ($input) { $input->type = 'file'; }) && $input->type === 'email', 'unsupported input type leaves previous type intact');
+$input->autofocus = true;
+check(str_contains($input->show(), ' autofocus'), 'autofocus preserved');
+
+require_once dirname(__DIR__).'/examples/InputDemo.php';
+$inputApp = new HIEQueryUI(new \HIEQueryUI\Examples\InputDemo(), 'ajax');
+$inputApp = unserialize(serialize($inputApp)); $demo = $inputApp->entrypoint; $demo->show();
+[$status] = request($inputApp, $demo->input->getId(), 'onChange', '23');
+check($status === 200 && $demo->input->value === '23' && $demo->status->text === 'Accepted quantity: 23', 'restored validator accepts value before listener');
+[$status, $body] = request($inputApp, $demo->input->getId(), 'onChange', '100');
+$html = base64_decode(json_decode($body, true)[0][$demo->input->getId()]);
+check($status === 200 && $demo->input->value === '23' && $demo->status->text === 'Accepted quantity: 23', 'rejected value never reaches listener');
+check(str_contains($html, 'value="23"') && str_contains($html, 'aria-invalid="true"') && str_contains($html, 'Enter a whole number from 1 to 99.'), 'rejection refreshes accepted value with accessible error');
+[$status] = request($inputApp, $demo->input->getId(), 'onEnter', '');
+check($demo->input->error === 'Enter a value.' && $demo->input->value === '23', 'required validated in PHP for Enter');
+[$status] = request($inputApp, $demo->input->getId(), 'onChange', "\xFF");
+check($demo->input->error === 'Enter valid UTF-8 text.' && $demo->input->value === '23', 'invalid UTF-8 rejected');
+[$status, $body] = request($inputApp, $demo->input->getId(), 'onEnter', '42');
+check($status === 200 && $demo->input->error === '' && $demo->status->text === 'Accepted quantity: 42', 'valid Enter clears error and invokes listener');
+check(!str_contains(base64_decode(json_decode($body, true)[0][$demo->input->getId()]), 'aria-invalid'), 'successful correction removes error attribute');
+[$status] = request($inputApp, $demo->lock->getId(), 'onClick');
+check($demo->input->readOnly && str_contains($demo->input->show(), ' readonly'), 'read-only state rendered');
+check(!str_contains($demo->input->show(), 'onkeydown=') && !str_contains($demo->input->show(), 'oninput='), 'read-only keyboard actions do not send rejected requests');
+[$status] = request($inputApp, $demo->input->getId(), 'onChange', '2');
+check($status === 400 && $demo->input->value === '42', 'crafted read-only change rejected');
+check(fails(fn() => $demo->input->dispatch('onEnter', base64_encode('2'))), 'direct read-only dispatch rejected');
+$inputApp = unserialize(serialize($inputApp)); $demo = $inputApp->entrypoint;
+check($demo->input->readOnly && !$demo->input->canHandle('onEnter'), 'read-only guard survives session restore');
+request($inputApp, $demo->lock->getId(), 'onClick');
+request($inputApp, $demo->disable->getId(), 'onClick');
+check($demo->input->disabled && str_contains($demo->input->show(), ' disabled'), 'disabled state rendered');
+[$status] = request($inputApp, $demo->input->getId(), 'onEnter', '2');
+check($status === 400 && $demo->input->value === '42', 'crafted disabled Enter rejected');
+request($inputApp, $demo->disable->getId(), 'onClick');
+[$status] = request($inputApp, $demo->input->getId(), 'onChange', '2');
+check($status === 200 && $demo->input->value === '2', 'unlocked input accepts events again');
+Widget::$changed = array();

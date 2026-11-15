@@ -32,6 +32,8 @@ The [Label example](examples/label.php) shows input and checkbox captions, trust
 
 The [Button example](examples/button.php) shows icons, accessible names, and enabling or disabling actions from PHP.
 
+The [Input example](examples/input.php) validates a quantity in PHP and shows read-only and disabled states.
+
 The built-in PHP server is for local development. Deploy behind your normal PHP web server for public use.
 
 ## Build an application in PHP

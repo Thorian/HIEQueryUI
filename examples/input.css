@@ -1,0 +1,5 @@
+@import url('demo.css');
+
+.input-status, .input-help { display: block; margin-top: 1rem; }
+.input-help { color: #465c6b; }
+input[aria-invalid="true"] { border: 2px solid #b52b34; }

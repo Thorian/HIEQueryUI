@@ -48,3 +48,28 @@ $save->disabled = true;
 `ariaLabel` supplies an optional escaped accessible name. For an icon-only button, use an empty title and set `ariaLabel` to describe its action. For a text button, the visible title supplies the name by default. Changing these protected properties queues the normal refresh. Existing `classes` and `style` remain available.
 
 The [Button example](../examples/button.php) includes an add action, a separate enable/disable action, and an icon-only reset action. The PHP controller owns the count and enabled state; no extra JavaScript is needed.
+
+## Input
+
+`new Input($title = '')` creates a single-value input whose title supplies its accessible name. `value` is the accepted value. Options include `placeholder` and `name` (empty strings by default), `autofocus`, `required`, `readOnly`, and `disabled` (false by default).
+
+`type` defaults to `text`. Supported values are text, password, email, tel, url, search, number, date, time, datetime-local, month, week, color, and range. Other types are rejected when assigned. The type controls native browser presentation; it does not add PHP email, URL, date, or numeric validation. Use a validator for application rules.
+
+```php
+class QuantityValidator implements \HIEQueryUI\InputValidator {
+    public function validate(\HIEQueryUI\Input $input, string $value): ?string {
+        return preg_match('/^[1-9][0-9]?$/D', $value)
+            ? null : 'Enter a whole number from 1 to 99.';
+    }
+}
+$input = new \HIEQueryUI\Input('Quantity');
+$input->required = true;
+$input->placeholder = '1 to 99';
+$input->addValidator(new QuantityValidator());
+```
+
+Validators run in registration order before the value changes or a listener runs. Return null to accept, or an error string to reject. The first rejection stops validation. UTF-8 and required-value checks run first; required rejects an empty string, while whitespace rules belong in a validator. Validators should inspect the proposed value without changing the input. They are serialized with the widget, so use named classes and load them before starting the session.
+
+On rejection, PHP keeps the previous value, skips the listener, and refreshes the input with `aria-invalid`, an escaped `aria-description`, and a hover title. The error is available as `error`; a later accepted event clears it. The browser displays the previous accepted value again. Applications can provide additional visible guidance alongside the field. Invalid input is a normal widget update, not an HTTP failure.
+
+Disabled and read-only inputs reject browser events in PHP, including crafted requests. Read-only text inputs remain focusable in the browser; disabled inputs are skipped by Tab. Native read-only behavior varies by input type, but the PHP guard applies to every type. Both states omit the event bindings. Programmatic value assignments remain available and do not run validators. Changing options queues the usual widget update. The [standalone example](../examples/input.php) shows validation, Enter, and toggling both states from PHP.
