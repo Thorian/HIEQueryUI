@@ -34,6 +34,8 @@ The [Button example](examples/button.php) shows icons, accessible names, and ena
 
 The [Input example](examples/input.php) validates a quantity in PHP and shows read-only and disabled states.
 
+The [TextArea example](examples/textarea.php) shows multiline notes, length limits, and keyboard saving.
+
 The built-in PHP server is for local development. Deploy behind your normal PHP web server for public use.
 
 ## Build an application in PHP

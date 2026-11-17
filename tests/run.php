@@ -85,4 +85,5 @@ check(!Widget::$changed && str_contains(base64_decode($updates[$root->getId()]),
 require __DIR__.'/label.php';
 require __DIR__.'/button.php';
 require __DIR__.'/input.php';
+require __DIR__.'/textarea.php';
 echo 'PASS '.$checks." PHP checks\n";

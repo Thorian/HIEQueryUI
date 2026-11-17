@@ -1,0 +1,6 @@
+@import url('demo.css');
+
+textarea { display: block; box-sizing: border-box; width: 100%; padding: .75rem; font: inherit; }
+textarea:focus-visible { outline: 3px solid #217db0; outline-offset: 2px; }
+textarea[aria-invalid="true"] { border: 2px solid #b52b34; }
+.notes-status { display: block; margin-top: 1rem; }

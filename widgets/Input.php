@@ -30,11 +30,7 @@ class Input extends InteractableWidget {
         if (!$this->canHandle($event)) throw new \InvalidArgumentException('Event has no registered listener.');
         $value = base64_decode($data, true);
         if ($value === false) throw new \InvalidArgumentException('Invalid event data.');
-        $error = preg_match('//u', $value) !== 1 ? 'Enter valid UTF-8 text.' : ($this->required && $value === '' ? 'Enter a value.' : null);
-        if ($error === null) foreach ($this->validators as $validator) {
-            $error = $validator->validate($this, $value);
-            if ($error !== null) break;
-        }
+        $error = $this->validateValue($value);
         if ($error !== null) {
             $this->error = $error !== '' ? $error : 'Invalid value.';
             $this->changed();
@@ -42,6 +38,14 @@ class Input extends InteractableWidget {
         }
         if ($this->error !== '') { $this->error = ''; $this->changed(); }
         parent::dispatch($event, $data);
+    }
+    protected function validateValue(string $value): ?string {
+        $error = preg_match('//u', $value) !== 1 ? 'Enter valid UTF-8 text.' : ($this->required && $value === '' ? 'Enter a value.' : null);
+        if ($error === null) foreach ($this->validators as $validator) {
+            $error = $validator->validate($this, $value);
+            if ($error !== null) break;
+        }
+        return $error;
     }
     public function show() {
         $this->displayed();

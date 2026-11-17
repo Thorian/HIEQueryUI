@@ -26,7 +26,7 @@ $container->add($name);
 $caption->text = 'Customer name'; // Queues a server-rendered update.
 ```
 
-`text` and `target` use the normal widget property accessors. Assigning `null` to `target` removes the association. Invalid target types are rejected without changing the previous target. The target is a reference, not an owned child: add both widgets to the interface, and keep their lifetimes together. Only Input and Checkbox are supported targets for now. An existing control's `aria-label` still supplies its accessible name; use matching text when pairing it with a visible Label.
+`text` and `target` use the normal widget property accessors. Assigning `null` to `target` removes the association. Invalid target types are rejected without changing the previous target. The target is a reference, not an owned child: add both widgets to the interface, and keep their lifetimes together. Input (including TextArea) and Checkbox are supported targets. An existing control's `aria-label` still supplies its accessible name; use matching text when pairing it with a visible Label.
 
 Labels are passive: they register no events and need no extra JavaScript or CSS. Native labels focus inputs and toggle checkboxes. They do not have disabled/read-only state or add a tab stop. Text, target references, IDs and classes survive session restoration. Changing public `classes` requires `changed()`, as on other widgets. See the [standalone example](../examples/label.php) for several labels and a PHP listener that updates one after typing.
 
@@ -73,3 +73,22 @@ Validators run in registration order before the value changes or a listener runs
 On rejection, PHP keeps the previous value, skips the listener, and refreshes the input with `aria-invalid`, an escaped `aria-description`, and a hover title. The error is available as `error`; a later accepted event clears it. The browser displays the previous accepted value again. Applications can provide additional visible guidance alongside the field. Invalid input is a normal widget update, not an HTTP failure.
 
 Disabled and read-only inputs reject browser events in PHP, including crafted requests. Read-only text inputs remain focusable in the browser; disabled inputs are skipped by Tab. Native read-only behavior varies by input type, but the PHP guard applies to every type. Both states omit the event bindings. Programmatic value assignments remain available and do not run validators. Changing options queues the usual widget update. The [standalone example](../examples/input.php) shows validation, Enter, and toggling both states from PHP.
+
+## TextArea
+
+`new TextArea($title = '')` extends Input for multiline text. It inherits `value`, `placeholder`, `name`, `autofocus`, `required`, `readOnly`, `disabled`, `error`, and `addValidator()`. Existing Label widgets can target a TextArea. It has no `type` option.
+
+```php
+$notes = new \HIEQueryUI\TextArea('Delivery notes');
+$notes->rows = 6;
+$notes->maxLength = 500;
+$notes->value = "First line\nSecond line";
+$notes->addChangeListener($controller);
+$notes->addEnterListener($controller);
+```
+
+`rows` defaults to 4 and `cols` to 40; both require positive integers. `wrap` is `soft` by default, or `off` to scroll long lines horizontally. `minLength` and `maxLength` default to null (no bound). Bounds accept non-negative integers and cannot cross. Like native textarea limits, lengths count UTF-16 units: most characters count once, while characters such as 🦞 count twice. An optional empty value is allowed even with a minimum; set `required` to reject empty text.
+
+Typing sends the usual debounced `onChange` event. Enter inserts a newline. Ctrl+Enter or Command+Enter flushes pending typing and invokes `onEnter` immediately. Browser line endings are normalized to LF before length checks and Input validators run. Length errors keep the previous accepted value, skip listeners, and use the same accessible error attributes as Input. Programmatic assignments do not run validation.
+
+Text is always escaped, including closing textarea tags; `Html::raw()` is not supported as a value. An initial newline is preserved when the browser parses the element. Text, bounds, validators, and lock states survive session restoration. Read-only controls remain focusable; disabled controls are skipped by Tab. Both reject crafted events in PHP. See the [notes example](../examples/textarea.php).
